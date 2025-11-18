@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign up • PMGT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand"><div class="logo-badge">PMGT</div><div class="wordmark">PMGT</div></div>
+    <div class="actions"><a class="btn ghost" href="signin.html">Sign in</a></div>
+  </nav>
+
+  <div class="center">
+    <form class="form" onsubmit="signup(event)">
+      <h2>Create your account</h2>
+      <p class="notice">Tenants can only sign up if their email was added by the landlord.</p>
+      <div class="stack">
+        <label for="su_email">Email</label>
+        <input class="input" id="su_email" type="email" placeholder="you@domain.com" required>
+        <label for="su_pass">Password</label>
+        <input class="input" id="su_pass" type="password" placeholder="At least 6 characters" required>
+        <label for="su_pass2">Confirm password</label>
+        <input class="input" id="su_pass2" type="password" placeholder="Re-enter password" required>
+        <label for="su_role">I am a...</label>
+        <select id="su_role" class="input" required>
+          <option value="owner">Owner / Landlord</option>
+          <option value="tenant">Tenant / Renter</option>
+        </select>
+        <button class="btn primary" type="submit">Create account</button>
+        <div id="signupMsg" class="notice" style="opacity:.85"></div>
+      </div>
+      <p class="notice">Already have an account? <a href="signin.html">Sign in</a></p>
+    </form>
+  </div>
+
+  <script src="db.js"></script>
+  <script src="app-sql.js"></script>
+</body>
+</html>

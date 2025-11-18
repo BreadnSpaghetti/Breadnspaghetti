@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Owner Dashboard • PMGT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body onload="renderOwner(); ownerPopulateOptions();">
+  <nav class="nav">
+    <div class="brand"><div class="logo-badge">PMGT</div><div class="wordmark">PMGT</div></div>
+    <div class="actions">
+      <span id="navUser" class="muted"></span>
+      <button class="btn" onclick="logout()">Log out</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="section">
+      <h1 class="heroTitle">Owner dashboard</h1>
+      <p class="heroSub">Manage your units, tenants, leases, and payments.</p>
+    </header>
+
+    <section class="grid cards section">
+      <div class="card"><h3>All Properties</h3><div class="kpi" id="kpiProps">0</div><div class="muted">Total units</div></div>
+      <div class="card"><h3>Occupied</h3><div class="kpi small" id="kpiOcc">0</div><div class="muted">Currently leased</div></div>
+      <div class="card"><h3>Vacant</h3><div class="kpi small" id="kpiVac">0</div><div class="muted">Available units</div></div>
+      <div class="card"><h3>Rent Unpaid</h3><div class="kpi small" id="kpiUnpaid">0</div><div class="muted">Needs attention</div></div>
+    </section>
+
+    <section class="section">
+      <div class="tabs">
+        <button id="tab-properties" class="tab" data-tab="properties">Properties</button>
+        <button id="tab-tenants" class="tab" data-tab="tenants">Tenants</button>
+        <button id="tab-leases" class="tab" data-tab="leases">Leases</button>
+        <button id="tab-payments" class="tab" data-tab="payments">Payments</button>
+        <button id="tab-paysetup" class="tab" data-tab="paysetup">Payment Setup</button>
+      </div>
+
+      <div id="panel-properties" class="panel card">
+        <div class="toolbar">
+          <form onsubmit="addProperty(event)" class="row" style="width:100%">
+            <div class="col half"><input class="input" name="ap_address" placeholder="Address (e.g., 101 Pine St)" required></div>
+            <div class="col half"><input class="input" name="ap_rent" type="number" min="0" placeholder="Default rent ($)" required></div>
+            <div class="col"><button class="btn primary" type="submit">Add property</button></div>
+          </form>
+        </div>
+        <div style="overflow:auto">
+          <table class="table">
+            <thead><tr><th>Address</th><th>Status</th><th>Default Rent</th><th></th></tr></thead>
+            <tbody id="tbody-properties"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="panel-tenants" class="panel card" style="display:none">
+        <div class="toolbar">
+          <form onsubmit="addTenant(event)" class="row" style="width:100%">
+            <div class="col half"><input class="input" name="at_name" placeholder="Full name" required></div>
+            <div class="col half"><input class="input" name="at_contact" placeholder="Contact (email/phone)"></div>
+            <div class="col"><button class="btn primary" type="submit">Add tenant</button></div>
+          </form>
+        </div>
+        <div style="overflow:auto">
+          <table class="table">
+            <thead><tr><th>Name</th><th>Contact</th><th></th></tr></thead>
+            <tbody id="tbody-tenants"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="panel-leases" class="panel card" style="display:none">
+        <div class="toolbar">
+          <form onsubmit="addLease(event)" class="row" style="width:100%">
+            <div class="col half">
+              <select id="al_property" class="input" name="al_property" required></select>
+            </div>
+            <div class="col half">
+              <select id="al_tenant" class="input" name="al_tenant" required></select>
+            </div>
+            <div class="col half"><label>Start<input class="input" type="date" name="al_start" required></label></div>
+            <div class="col half"><label>End<input class="input" type="date" name="al_end" required></label></div>
+            <div class="col half"><input class="input" name="al_rent" type="number" min="0" placeholder="Monthly rent ($)" required></div>
+            <div class="col"><button class="btn primary" type="submit">Add lease</button></div>
+          </form>
+        </div>
+        <div style="overflow:auto">
+          <table class="table">
+            <thead><tr><th>Property</th><th>Tenant</th><th>Start</th><th>End</th><th>Rent</th><th></th></tr></thead>
+            <tbody id="tbody-leases"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="panel-payments" class="panel card" style="display:none">
+        <div class="toolbar">
+          <form onsubmit="addPayment(event)" class="row" style="width:100%">
+            <div class="col half">
+              <select id="pay_lease" class="input" name="pay_lease" required></select>
+            </div>
+            <div class="col half"><input class="input" type="month" name="pay_month" required></div>
+            <div class="col half"><input class="input" type="number" name="pay_amount" min="0" placeholder="Amount ($)" required></div>
+            <div class="col half">
+              <select class="input" name="pay_paid">
+                <option value="true">Paid</option>
+                <option value="false">Unpaid</option>
+              </select>
+            </div>
+            <div class="col"><button class="btn primary" type="submit">Add payment</button></div>
+          </form>
+        </div>
+        <div style="overflow:auto">
+          <table class="table">
+            <thead><tr><th>Property</th><th>Tenant</th><th>Month</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+            <tbody id="tbody-payments"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="panel-paysetup" class="panel card" style="display:none">
+        <h3>Payment setup</h3>
+        <p class="notice">These instructions will be shown to your tenants when they click “Make a payment”.</p>
+        <form class="stack" onsubmit="saveOwnerPaymentInfo(event)">
+          <label for="pay_instructions">Payment instructions for tenants</label>
+          <textarea id="pay_instructions" name="pay_instructions" class="input" rows="6" placeholder="Example: Send Zelle to me@bank.com, or mail a check to 123 Main St, City, ST 00000."></textarea>
+          <button class="btn primary" type="submit">Save instructions</button>
+          <div id="ownerPayMsg" class="notice"></div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">© 2025 PMGT — Owner</footer>
+  <script src="db.js"></script>
+  <script src="app-sql.js"></script>
+</body>
+</html>

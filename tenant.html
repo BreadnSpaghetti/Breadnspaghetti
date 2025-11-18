@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tenant Dashboard • PMGT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body onload="renderTenant()">
+  <nav class="nav">
+    <div class="brand"><div class="logo-badge">PMGT</div><div class="wordmark">PMGT</div></div>
+    <div class="actions">
+      <span id="navUser" class="muted"></span>
+      <button class="btn" onclick="logout()">Log out</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="section">
+      <h1 class="heroTitle">Tenant dashboard</h1>
+      <p class="heroSub">View your lease and make payments.</p>
+    </header>
+
+    <section class="grid cards section">
+      <div class="card">
+        <h3>Your Lease</h3>
+        <div class="row">
+          <div class="col half"><div class="muted">Property</div><div id="leaseProperty" class="kpi small">—</div></div>
+          <div class="col half"><div class="muted">Tenant</div><div id="leaseTenant" class="kpi small">—</div></div>
+          <div class="col half"><div class="muted">Start</div><div id="leaseStart" class="kpi small">—</div></div>
+          <div class="col half"><div class="muted">End</div><div id="leaseEnd" class="kpi small">—</div></div>
+          <div class="col half"><div class="muted">Rent</div><div id="leaseRent" class="kpi small">—</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <h3 style="margin:0">Payments</h3>
+          <button class="btn primary" onclick="showPaymentInfo()">Make a payment</button>
+        </div>
+        <div style="overflow:auto">
+          <table class="table">
+            <thead><tr><th>Month</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="tenantPayments"></tbody>
+          </table>
+        </div>
+        <div id="tenantPaymentInfoSection" class="section" style="display:none; margin-top:16px;">
+          <h4>How to pay your rent</h4>
+          <p id="tenantPaymentInfoText" class="notice"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">© 2025 PMGT — Tenant</footer>
+  <script src="db.js"></script>
+  <script src="app-sql.js"></script>
+</body>
+</html>
